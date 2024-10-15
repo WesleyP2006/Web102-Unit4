@@ -1,33 +1,47 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { useEffect } from 'react';
 
-function App() {
-  const [count, setCount] = useState(0)
+function App(){
+  const url = `https://api.thecatapi.com/v1/images/search?limit=20`;
+
+  const [dogImage, setDogImage] = useState(null);
+  const [dogID , setDogID] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchDogImage = async (url) => {
+      try {
+        const response = await fetch(url , {headers: {
+          'x-api-key': live_d5SE7pmHJimkJYJSFXpNAeiV8nsOYCSa6rhD2OGuUl0mTaKgaSwGAl8MNrFjoLw3
+        }});
+        const data = await response.json();
+        setDogImage(data[0].url);
+        setLoading(false);
+        setDogID(data.ID)
+      } catch (err) {
+        setError('Failed to fetch dog image');
+        setLoading(false);
+      }
+    }
+    fetchDogImage(url)
+    }, []);
+
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className='whole-page'>
+        <h1>Discover Dogs!!!</h1>
+        <h3>Uncover the dogs of the world!!!</h3>
+
+        <img src={dogImage}/>
+
+
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      <div className='side-bar'>
+
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
